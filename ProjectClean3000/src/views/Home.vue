@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
 
 const listClients = ref([
@@ -20,16 +21,22 @@ const listClients = ref([
     },
 ])
 
+let valueClient = ref("");
+let valueTime = ref("");
+let valueText = ref("");
+
 const dateToday = new Date().toLocaleDateString('fr-fr')
-const arrayTech = ref([
-    {
-        nameClient: '',
-        date: '',
-        text: '',
-    }
-]);
+const router = useRouter();
+
 const confirmForm = () => {
-    arrayTech.push()
+    router.push({
+        name: "confirm",
+        query: {
+            valueClient: valueClient.value,
+            valueTime: valueTime.value,
+            valueText: valueText.value,
+        }
+    });
 }
 </script>
 
@@ -44,16 +51,14 @@ const confirmForm = () => {
                 
                 <select name="client" id="client-select" v-model="valueClient">
                 <option value="client-select">-Selectionnez le client-</option>
-                <option v-for="client in listClients" value="client"> 
+                <option v-for="client in listClients" :value="client.nameClient"> 
                     {{ client.nameClient }} 
                 </option>
                 </select><br>
-                {{ valueClient }}
 
                 <label for="dateToday">Notre technicien est intervenu le :</label><br>
                 <input type="date" :id="dateToday" name="techtime" :min="dateToday" 
                 :max="dateToday" v-model="valueTime"/><br>
-                {{ valueTime }}
 
                 <label for="">Observations :</label><br>
                 <textarea v-model="valueText" :minlength="0" :maxlength="500"></textarea><br>
@@ -63,7 +68,9 @@ const confirmForm = () => {
                 <label for="signingUpTech">Signature du technicien :</label><br>
                 <label for="signingUpClient">Signature du client :</label><br>
 
-                <router-link to="/confirm"><button type="submit" @click="confirmForm">Confirmer</button></router-link>
+                <router-link :to="{ name: 'confirm', query: { valueClient, valueTime, valueText } }">
+                    <button type="submit">Confirmer</button>
+                </router-link>
 
                 <img src="../assets/img/logo-clean3000-mini.png" class="leafImage" alt="Feuille d'arbre">
             </form>
@@ -72,49 +79,44 @@ const confirmForm = () => {
 </template>
 
 <style scoped lang="scss">
-*{
-    padding: 0;
-    margin: 0;
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 
-        .main-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
+    h2 {
+        margin: 25px;
+    }
 
-        h2 {
-            margin: 25px;
-        }
+    .container-form {
+        background-color: #3D3D33;
+        color: white;
+        padding: 15px;
+        width: 80%;
+        border-radius: 5px;
+        
+        .form {
 
-        .container-form {
-            background-color: #3D3D33;
-            color: white;
-            padding: 15px;
-            width: 80%;
-            border-radius: 5px;
-            
-            .form {
+            textarea {
+                height: 150px;
+                width: 90%;
+            }
 
-                textarea {
-                    height: 150px;
-                    width: 90%;
-                }
+            button {
+                border: none;
+                padding: 8px 20px;
+            }
 
-                button {
-                    border: none;
-                    padding: 8px 20px;
-                }
-
-                .leafImage {
-                    position: relative;
-                    float: right;
-                    rotate: 220deg;
-                    height: 40px;
-                    width: 40px;
-                }
+            .leafImage {
+                position: relative;
+                float: right;
+                rotate: 220deg;
+                height: 40px;
+                width: 40px;
             }
         }
-    }  
+    }
 }
 
 </style>
