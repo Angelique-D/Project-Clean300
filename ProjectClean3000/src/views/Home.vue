@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
+import { useFormValueStore } from '../stores/formValue'
 
 const listClients = ref([
     {
@@ -21,31 +22,44 @@ const listClients = ref([
     },
 ])
 
-let valueClient = ref("");
-let valueTime = ref("");
-let valueText = ref("");
-
 const dateToday = new Date().toLocaleDateString('fr-fr')
 const router = useRouter();
 
-const confirmForm = () => {
-    router.push({
-        name: "confirm",
-        query: {
-            valueClient: valueClient.value,
-            valueTime: valueTime.value,
-            valueText: valueText.value,
-        }
+// const confirmForm = () => {
+//     router.push({
+//         name: "confirm",
+//         query: {
+//             valueClient: valueClient.value,
+//             valueTime: valueTime.value,
+//             valueText: valueText.value,
+//         }
+//     });
+// }
+
+const valueClient = ref('')
+const valueTime = ref('')
+const valueText = ref('')
+
+const formValueStore = useFormValueStore()
+
+function handleSubmit() {
+    formValueStore.notices.push({
+        customer: valueClient.value,
+        time: valueTime.value,
+        text: valueText.value
     });
+
+    router.push({name: 'confirm'});
 }
+
 </script>
 
 <template>
     <Header/>
     <div class="main-container">
-        <h2>AVIS DE PASSAGE</h2>
+        <h2>Avis de passage</h2>
         <div class="container-form">
-            <form @submit.prevent="handlerSubmit" class="form">
+            <form @submit.prevent="handleSubmit" class="form">
 
                 <label for="client-select">Nom client :</label><br>
                 
@@ -68,9 +82,11 @@ const confirmForm = () => {
                 <label for="signingUpTech">Signature du technicien :</label><br>
                 <label for="signingUpClient">Signature du client :</label><br>
 
-                <router-link :to="{ name: 'confirm', query: { valueClient, valueTime, valueText } }">
+                <!-- <router-link :to="{ name: 'confirm', query: { valueClient, valueTime, valueText } }"> -->
+                
                     <button type="submit">Confirmer</button>
-                </router-link>
+                    
+                <!-- </router-link> -->
 
                 <img src="../assets/img/logo-clean3000-mini.png" class="leafImage" alt="Feuille d'arbre">
             </form>
